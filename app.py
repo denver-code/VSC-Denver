@@ -1,8 +1,45 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for
+# from flask_jwt import JWT, jwt_required, current_identity
+# from flask_httpauth import HTTPDigestAuth
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user 
+# from flask_login import LoginManager, UserMixin, login_required, login_user
+from werkzeug.security import safe_str_cmp
 import os
+import json
 app = Flask(__name__)
-app.config["UPLOADS"] = "storage/denver220/"
+app.config["UPLOADS"] = "storage/mainuser/"
+app.debug = True
+app.config['SECRET_KEY'] = 'super-secret'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+class User(UserMixin):
 
+    def __init__(self, id):
+        self.id = id
+        self.name = "user" + str(id)
+        self.password = self.name + "_secret"
+        
+    def __repr__(self):
+        return "%d/%s/%s" % (self.id, self.name, self.password)
+
+
+# create some users with ids 1 to 20       
+users = [User(id) for id in range(1, 21)]
+
+# auth = HTTPDigestAuth()
+
+# users = {
+#     "d": "d",
+#     "susan": "bye"
+# }
+
+# @auth.get_password
+# def get_pw(username):
+#     if username in users:
+#         return users.get(username)
+#     return None
 @app.route("/upload-image", methods=["GET", "POST"])
 def upload_image():
    if request.method == "POST":
@@ -12,7 +49,29 @@ def upload_image():
          image.save(os.path.join(app.config["UPLOADS"], image.filename))
          return redirect(request.url)    
    return render_template("upload_image.html")
-
+# @auth.login_required
+@app.route("/")
+@login_required
+def main_page():
+   return render_template("index.html")
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404 
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+   if request.method == "GET":
+      return render_template("login.html")
+   else:
+      if request.form["password"] == request.form["login"]:
+         id = request.form["login"]
+         user = User(id)
+         login_user(user)
+         return redirect("/")
+      # if request.form["login"] == "denver" and request.form["password"] == "am3plus":
+      #    logged = 1
+      #    return redirect("/")
+      # else:
+      #    return render_template("login.html", warning="Data incorrect!")
 @app.route("/upload-file", methods=["GET", "POST"])
 def upload_file():
    if request.method == "POST":
@@ -63,6 +122,8 @@ def write_to_file():
       file.write(request.form.get("code"))
       file.close()
       return redirect(url_for(".repo_list"))
-
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
 app.run()
 #http://127.0.0.1:5000/view_file?reponame=denver220&filename=main.txt
