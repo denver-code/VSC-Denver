@@ -6,20 +6,23 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from werkzeug.security import safe_str_cmp
 import os
 import json
+user_name = "denver"
+pass_word = "am3plus"
 app = Flask(__name__)
-app.config["UPLOADS"] = "storage/mainuser/"
+app.config["UPLOADS"] = "storage/"+user_name+"/"
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
 class User(UserMixin):
 
     def __init__(self, id):
         self.id = id
-        self.name = "user" + str(id)
-        self.password = self.name + "_secret"
+        self.name = user_name
+        self.password = pass_word
         
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
@@ -41,6 +44,7 @@ users = [User(id) for id in range(1, 21)]
 #         return users.get(username)
 #     return None
 @app.route("/upload-image", methods=["GET", "POST"])
+@login_required
 def upload_image():
    if request.method == "POST":
       if request.files:
@@ -50,39 +54,56 @@ def upload_image():
          return redirect(request.url)    
    return render_template("upload_image.html")
 # @auth.login_required
+
 @app.route("/")
 @login_required
 def main_page():
    return render_template("index.html")
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404 
+
 @app.route("/login", methods=["GET", "POST"])
-def login_page():
+def login():
    if request.method == "GET":
       return render_template("login.html")
    else:
-      if request.form["password"] == request.form["login"]:
+      if request.form["password"] == pass_word and request.form["login"] == user_name:
          id = request.form["login"]
          user = User(id)
          login_user(user)
-         return redirect("/")
+         next = str(request.args.get('next'))
+         if next != "None":
+            print(next)
+            return redirect(next)
+         else:  
+            return redirect("/")
+      else:
+         return render_template("login.html", warning="Data incorrect!")
       # if request.form["login"] == "denver" and request.form["password"] == "am3plus":
       #    logged = 1
       #    return redirect("/")
       # else:
       #    return render_template("login.html", warning="Data incorrect!")
 @app.route("/upload-file", methods=["GET", "POST"])
+@login_required
 def upload_file():
    if request.method == "POST":
       if request.files:
          file = request.files["file"]
          print(file)
-         file.save(os.path.join(app.config["UPLOADS"], file.filename))
-         return redirect(request.url)    
+         if os.path.exists(os.path.join(app.config["UPLOADS"], file.filename)):
+            file.save(os.path.join(app.config["UPLOADS"], file.filename))
+            return redirect(request.url)    
+         else:
+            os.mkdir(app.config["UPLOADS"])
+            file.save(os.path.join(app.config["UPLOADS"], file.filename))
+            return redirect(request.url)               
    return render_template("upload_file.html")
 
 @app.route("/create-repo", methods=["GET", "POST"])
+@login_required
 def create_repo():
    if request.method == "POST":
       project_name = request.form.get('RepoName')
@@ -91,10 +112,12 @@ def create_repo():
    return render_template("new_repo.html")
 
 @app.route("/list", methods=["GET", "POST"])
+@login_required
 def repo_list():
    projects = os.listdir("storage/")
    return render_template("repo_list.html", data=projects)
 @app.route("/view_file", methods=["GET", "POST"])
+@login_required
 def view_file():
    #?name=denver
    reponame = request.args.get('reponame')
@@ -105,12 +128,14 @@ def view_file():
    #projects = os.listdir("storage/{}".format(reponame))
    return render_template("view_file.html", repo_name=reponame,data=data)
 @app.route("/view_repo", methods=["GET", "POST"])
+@login_required
 def view_repo():
    #?name=denver
    reponame = request.args.get('reponame')
    projects = os.listdir("storage/{}".format(reponame))
    return render_template("view_repo.html",repo_name=reponame,data=projects)
 @app.route("/write-to-file", methods=["GET", "POST"])
+@login_required
 def write_to_file():
    #?name=denver
    reponame = request.args.get('reponame')
@@ -122,6 +147,11 @@ def write_to_file():
       file.write(request.form.get("code"))
       file.close()
       return redirect(url_for(".repo_list"))
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
