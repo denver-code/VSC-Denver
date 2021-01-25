@@ -1,0 +1,70 @@
+---- Minecraft Crash Report ----
+// Shall we play a game?
+
+Time: 06.11.20 20:28
+Description: Unexpected error
+
+java.lang.NullPointerException: Unexpected error
+	at net.minecraft.client.Minecraft.updateUniform(Minecraft.java:812)
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:785)
+	at net.minecraft.client.Minecraft.processKeyBinds(Minecraft.java:1472)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1360)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:917)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:540)
+	at net.minecraft.client.main.Main.main(Main.java:188)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at net.minecraft.client.Minecraft.updateUniform(Minecraft.java:812)
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:785)
+	at net.minecraft.client.Minecraft.processKeyBinds(Minecraft.java:1472)
+
+-- Affected level --
+Details:
+	All players: 1 total; [ClientPlayerEntity['Denver'/1, l='MpServer', x=-22.65, y=64.18, z=5.98]]
+	Chunk stats: Client Chunk Cache: 729, 455
+	Level dimension: minecraft:overworld
+	Level name: MpServer
+	Level seed: 5274822655796753555
+	Level generator: ID 00 - default, ver 1. Features enabled: false
+	Level generator options: {}
+	Level spawn location: World: (-13,63,-46), Chunk: (at 3,3,2 in -1,-3; contains blocks -16,0,-48 to -1,255,-33), Region: (-1,-1; contains chunks -32,-32 to -1,-1, blocks -512,0,-512 to -1,255,-1)
+	Level time: 185770 game time, 208826250 day time
+	Known server brands: 
+	Level was modded: false
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: survival (ID 0). Hardcore: false. Cheats: false
+	Server brand: Tuinity
+	Server type: Non-integrated multiplayer server
+Stacktrace:
+	at net.minecraft.client.world.ClientWorld.fillCrashReport(ClientWorld.java:435)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:1833)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:559)
+	at net.minecraft.client.main.Main.main(Main.java:188)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.15.2
+	Minecraft Version ID: 7e2494cc2dc346c2a1457584dac8c6a5
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_271, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 216703592 bytes (206 MB) / 474316800 bytes (452 MB) up to 3834904576 bytes (3657 MB)
+	CPUs: 6
+	JVM Flags: 3 total; -Xmn128M -Xmx3669M -XX:+UseConcMarkSweepGC
+	Launched Version: 1.15.2
+	Backend library: LWJGL version 3.2.2 build 10
+	Backend API: GeForce GT 630/PCIe/SSE2 GL version 4.6.0 NVIDIA 441.08, NVIDIA Corporation
+	GL Caps: Using framebuffer using OpenGL 3.0
+	Using VBOs: Yes
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: 
+	Current Language: Русский (Россия)
+	CPU: 6x AMD FX(tm)-6100 Six-Core Processor 

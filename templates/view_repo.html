@@ -81,13 +81,20 @@
               <tr>
                 <th scope="col">File Name</th>
                 <th scope="col">Link</th>
+                <th scope="col">View</th>
               </tr>
             </thead>
             <tbody>
                 {% for d in data %}  
-    <tr>
+        <tr>
         <td>{{d}}</td>
-        <td> <a href="view_file?reponame={{repo_name}}&filename={{d}}" download>Download</a><br></td><!-- {{repo_name}}/-->
+         <td> <a href="/uploads?repo={{repo_name}}&file={{d}}" download>Download</a><br></td><!--{{repo_name}}/  view_file?reponame={{repo_name}}&filename={{d}}-->
+       <!-- <td> <a href="{{ url_for('download', filename='repo_name/d') }}">File</a></td> -->
+        {% if d[-4:] == ".png" %}
+        <td> <a href="view-image?repo={{repo_name}}&file={{d}}">View</a><br></td>
+        {% else %}
+        <td> <a download>-</a><br></td>
+      {% endif %}
       </tr>
 {% endfor %}
 

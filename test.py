@@ -1,0 +1,1 @@
+print("http://localhost:5000/upload-file"[:-11])
