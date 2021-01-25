@@ -49,10 +49,16 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{url_for("main_page")}}">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for("upload_file")}}">Create Repo</a>
+              <a class="nav-link" href="{{url_for("upload_file")}}">Upload file</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for("repo_list")}}">Repo list</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for("create_repo")}}">New repo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link disabled" href="#">Add user</a>
@@ -90,8 +96,12 @@
         <td>{{d}}</td>
          <td> <a href="/uploads?repo={{repo_name}}&file={{d}}" download>Download</a><br></td><!--{{repo_name}}/  view_file?reponame={{repo_name}}&filename={{d}}-->
        <!-- <td> <a href="{{ url_for('download', filename='repo_name/d') }}">File</a></td> -->
-        {% if d[-4:] == ".png" %}
+        {% if d[-4:] == ".png" or d[-4:] == ".jpg" %}
         <td> <a href="view-image?repo={{repo_name}}&file={{d}}">View</a><br></td>
+        {% elif d[-4:] == ".txt" %}
+        <td> <a href="view_file?reponame={{repo_name}}&filename={{d}}">View</a><br></td>
+        {% elif d[-4:] == ".mp4" %}
+        <td> <a href="view-video?repo={{repo_name}}&file={{d}}">Play</a><br></td>
         {% else %}
         <td> <a download>-</a><br></td>
       {% endif %}

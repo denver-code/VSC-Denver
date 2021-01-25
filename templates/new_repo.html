@@ -64,15 +64,20 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="{{url_for("main_page")}}">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="{{url_for("repo_list")}}">Repo list<span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="{{url_for("create_repo")}}">Create repo<span class="sr-only">(current)</span></a>
-              </li>
-
+              <a class="nav-link" href="{{url_for("main_page")}}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for("upload_file")}}">Upload file</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for("repo_list")}}">Repo list</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for("create_repo")}}">New repo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Add user</a>
+            </li>
           </ul>
           <form class="form-inline mt-2 mt-md-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">

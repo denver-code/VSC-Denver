@@ -94,7 +94,7 @@ def login():
 #     # Returning file from appended path
 #     return send_from_directory(directory=uploads, filename=filename)
 @app.route('/uploads/', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def download():
    reponame = request.args.get('repo')
    filename = request.args.get('file')
@@ -103,7 +103,7 @@ def download():
    # return send_from_directory(directory=uploads, filename=str(filename))
    return send_file(uploads+filename, as_attachment=True)
 @app.route('/view-image/', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def view_image():
    reponame = request.args.get('repo')
    filename = request.args.get('file')
@@ -112,6 +112,16 @@ def view_image():
    g = uploads+filename
    # return render_template("view_image.html", image=str(g))
    return send_file(g, mimetype="image/png")
+@app.route('/view-video/', methods=['GET', 'POST'])
+# @login_required
+def view_video():
+   reponame = request.args.get('repo')
+   filename = request.args.get('file')
+   uploads = os.path.join(app.root_path, "storage/"+reponame+"/")
+   # print(uploads+filename)
+   g = uploads+filename
+   # return render_template("view_image.html", image=str(g))
+   return send_file(g, mimetype="video/mp4")
 
 @app.route("/upload-file", methods=["GET", "POST"])
 @login_required
@@ -139,8 +149,11 @@ def upload_file():
 def create_repo():
    if request.method == "POST":
       project_name = request.form.get('RepoName')
-      os.mkdir("storage/"+project_name)
-      return "Repo created"
+      if os.path.exists(os.path.join("storage/"+project_name+"/")):
+         return redirect(url_for("repo_list"))
+      else:
+         os.mkdir("storage/"+project_name)
+         return redirect(url_for("repo_list"))
    return render_template("new_repo.html")
 
 @app.route("/list", methods=["GET", "POST"])
@@ -187,5 +200,5 @@ def logout():
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
-app.run()
+app.run(host="0.0.0.0",port=80)
 #http://127.0.0.1:5000/view_file?reponame=denver220&filename=main.txt
